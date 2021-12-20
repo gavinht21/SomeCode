@@ -107,9 +107,11 @@ def check_import_modules(file_name):
                     elif line_num > 2:
                         tt_list = t_list[1:]
                         t = reduce(lambda x, y: x + y, tt_list)
-                        update_frequency_dictionary(t, word_dir)
+                        update_frequency_dictionary([t], word_dir)
                     else:
-                        print("Error 0001!")
+                        # print("Error 0001!")
+                        # print("line=", line)
+                        pass
 
                 if line.startswith('from'):
                     t_list = line.split()
@@ -119,9 +121,13 @@ def check_import_modules(file_name):
                             # print(f"t_list[1] = {t_list[1]}  ")
                             wd_list = t_list[1].split(".")
                             # print(f"wd_list = {wd_list}  ")
-                            update_frequency_dictionary(wd_list, word_dir)
+                            t_first = wd_list[0]
+                            # print(f"wd_list[0] = {t_first}  ")
+                            update_frequency_dictionary([t_first], word_dir)
                     else:
-                        print("Error 0002!")
+                        # print("Error 0002!")
+                        # print("line=", line)
+                        pass
 
         k_dir[file_name] = word_dir
         return k_dir
@@ -199,12 +205,15 @@ def RecurveDirMain(Path):
         Path: 输入的目录路径
     :return: None
     """
+    cnt = 0
     fileList = RecurveDir(Path)
     for file in fileList:
         #print(file)
         if not file.endswith('.py'):
             continue
-
+        cnt += 1
+        # if cnt > 10:
+        #     break
         # wordsCount = WordCount(file)
         # linesCount = LineCount(file)
         # charsCount = CharCount(file)
