@@ -117,8 +117,9 @@ def check_import_modules(file_name):
                         # import fibo, sys
                         tt_list = t_list[1:]
                         t = reduce(lambda x, y: x + y, tt_list)
-                        t = t.split(".")[0]
-                        wd_list = [t]
+                        wd_list = t.split(",")
+                        for i, val in enumerate(wd_list):
+                            wd_list[i] = val.split(".")[0]
                         # update_frequency_dictionary([t], word_dir)
                     else:
                         # print("Error 0001!")
