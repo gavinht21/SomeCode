@@ -8,6 +8,7 @@ import fnmatch
 import argparse
 from functools import reduce
 
+
 def main():
     """
     主函数
@@ -81,6 +82,7 @@ def check_import_modules(file_name):
     """
     import sys
     import fibo, sys
+    import defusedxml.ElementTree as ET
     from sound.effects import echo
     from fibo import fib, fib2
     ###################
@@ -98,20 +100,33 @@ def check_import_modules(file_name):
         with open(file_name, "r", encoding='utf-8') as f:
             for line in f:
                 line = line.strip()
+
+                line = line.split("as")[0]
+                line = line.strip()
+
+                wd_list = []
                 if line.startswith('import'):
                     t_list = line.split()
                     line_num = len(t_list)
                     if line_num == 2:
-                        wd_list = [t_list[1]]
-                        update_frequency_dictionary(wd_list, word_dir)
+                        # import sys
+                        t = t_list[1].split(".")[0]
+                        wd_list = [t]
+                        # update_frequency_dictionary(wd_list, word_dir)
                     elif line_num > 2:
+                        # import fibo, sys
                         tt_list = t_list[1:]
                         t = reduce(lambda x, y: x + y, tt_list)
-                        update_frequency_dictionary([t], word_dir)
+                        t = t.split(".")[0]
+                        wd_list = [t]
+                        # update_frequency_dictionary([t], word_dir)
                     else:
                         # print("Error 0001!")
                         # print("line=", line)
                         pass
+
+                    if wd_list:
+                        update_frequency_dictionary(wd_list, word_dir)
 
                 if line.startswith('from'):
                     t_list = line.split()
@@ -212,9 +227,14 @@ def RecurveDirMain(Path):
         # print(file)
         if not file.endswith('.py'):
             continue
-        # cnt += 1
-        # if cnt > 3:
+        cnt += 1
+        # if cnt > 10:
         #     break
+
+        if file.find("test_reporting") != -1 or \
+            file.find("tests") != -1\
+            :
+            continue
 
         # wordsCount = WordCount(file)
         # linesCount = LineCount(file)
@@ -223,6 +243,7 @@ def RecurveDirMain(Path):
 
         word_dir = check_import_modules(file)
         print(word_dir)
+
         t_dict_keys = word_dir.keys()
         # print(t_dict_keys)
         if len(t_dict_keys) != 1:
@@ -249,7 +270,7 @@ def RecurveDirMain(Path):
         update_frequency_dictionary(val, summary_dir)
 
     print("Summary:")
-    # print_frequency_dictionary(summary_dir)
+    print_frequency_dictionary(summary_dir)
 
 
 def CCBCountMain(fileName):
