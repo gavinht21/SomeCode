@@ -206,14 +206,16 @@ def RecurveDirMain(Path):
     :return: None
     """
     cnt = 0
+    path_dir_list = []
     fileList = RecurveDir(Path)
     for file in fileList:
-        #print(file)
+        # print(file)
         if not file.endswith('.py'):
             continue
-        cnt += 1
-        # if cnt > 10:
+        # cnt += 1
+        # if cnt > 3:
         #     break
+
         # wordsCount = WordCount(file)
         # linesCount = LineCount(file)
         # charsCount = CharCount(file)
@@ -221,7 +223,33 @@ def RecurveDirMain(Path):
 
         word_dir = check_import_modules(file)
         print(word_dir)
+        t_dict_keys = word_dir.keys()
+        # print(t_dict_keys)
+        if len(t_dict_keys) != 1:
+            continue
+        # print(type(t_dict_keys))
+        t_k1 = list(t_dict_keys)[0]
+        # print(type(t_k1))
+        t_v1 = word_dir[t_k1]
+
+        # print(t_v1)
+        t_v_len = len(t_v1)
+        if t_v_len == 0:
+            continue
+
+        path_dir_list.append(t_v1)
+        # print(path_dir_list)
         # print_frequency_dictionary(word_dir)
+    # print(path_dir_list)
+
+    path_dir_list_len = len(path_dir_list)
+    summary_dir = {}
+    # Summary results
+    for i, val in enumerate(path_dir_list):
+        update_frequency_dictionary(val, summary_dir)
+
+    print("Summary:")
+    # print_frequency_dictionary(summary_dir)
 
 
 def CCBCountMain(fileName):
