@@ -99,13 +99,19 @@ def check_import_modules(file_name):
     try:
         with open(file_name, "r", encoding='utf-8') as f:
             for line in f:
+                # import _strptime  # workaround python bug ref: https://stackoverflow.com/a/22476843/2514803
+                l_index = line.find('#')
+                line = line[:l_index]
                 line = line.strip()
-
-                line = line.split("as")[0]
+                # skipped line, eg import apis.system.basic as basic_obj
+                line = line.split(" as")[0]
                 line = line.strip()
 
                 wd_list = []
-                if line.startswith('import'):
+
+                # skipped some line, eg: import_file_path(path, 1)
+                if line.startswith('import '):
+                    print("import line:", line)
                     t_list = line.split()
                     line_num = len(t_list)
                     if line_num == 2:
@@ -129,7 +135,10 @@ def check_import_modules(file_name):
                     if wd_list:
                         update_frequency_dictionary(wd_list, word_dir)
 
-                if line.startswith('from'):
+                # skipped some line, eg from_name = "D{}".format(from_index)
+                # from 5 minutes to 1 minute, then restart Monit service with delaying 10 seconds.
+                if line.startswith('from ') and line.find('import') > 7:
+                    print("from line:", line)
                     t_list = line.split()
                     line_num = len(t_list)
                     if line_num >= 4:
@@ -232,10 +241,14 @@ def RecurveDirMain(Path):
         # if cnt > 10:
         #     break
 
-        if file.find("test_reporting") != -1 or \
-            file.find("tests") != -1\
-            :
-            continue
+        # if file.find("test_reporting") != -1:
+        #         # or file.find("tests") != -1:
+        #     continue
+
+        # if file.find("tests") != -1:
+        #     pass
+        # else:
+        #     continue
 
         # wordsCount = WordCount(file)
         # linesCount = LineCount(file)
