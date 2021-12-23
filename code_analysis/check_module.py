@@ -9,13 +9,42 @@ import argparse
 from functools import reduce
 
 
+# 156
+g_builtins_list = ['ArithmeticError', 'AssertionError', 'AttributeError', 'BaseException', 'BlockingIOError',
+                   'BrokenPipeError', 'BufferError', 'BytesWarning', 'ChildProcessError', 'ConnectionAbortedError',
+                   'ConnectionError', 'ConnectionRefusedError', 'ConnectionResetError', 'DeprecationWarning',
+                   'EOFError', 'Ellipsis', 'EnvironmentError', 'Exception', 'False', 'FileExistsError',
+                   'FileNotFoundError', 'FloatingPointError', 'FutureWarning', 'GeneratorExit', 'IOError',
+                   'ImportError', 'ImportWarning', 'IndentationError', 'IndexError', 'InterruptedError',
+                   'IsADirectoryError', 'KeyError', 'KeyboardInterrupt', 'LookupError', 'MemoryError',
+                   'ModuleNotFoundError', 'NameError', 'None', 'NotADirectoryError', 'NotImplemented',
+                   'NotImplementedError', 'OSError', 'OverflowError', 'PendingDeprecationWarning', 'PermissionError',
+                   'ProcessLookupError', 'RecursionError', 'ReferenceError', 'ResourceWarning', 'RuntimeError',
+                   'RuntimeWarning', 'StopAsyncIteration', 'StopIteration', 'SyntaxError', 'SyntaxWarning',
+                   'SystemError', 'SystemExit', 'TabError', 'TimeoutError', 'True', 'TypeError', 'UnboundLocalError',
+                   'UnicodeDecodeError', 'UnicodeEncodeError', 'UnicodeError', 'UnicodeTranslateError',
+                   'UnicodeWarning', 'UserWarning', 'ValueError', 'Warning', 'WindowsError', 'ZeroDivisionError', '_',
+                   '__build_class__', '__debug__', '__doc__', '__import__', '__loader__', '__name__', '__package__',
+                   '__spec__', 'abs', 'all', 'any', 'ascii', 'bin', 'bool', 'breakpoint', 'bytearray', 'bytes',
+                   'callable', 'chr', 'classmethod', 'compile', 'complex', 'copyright', 'credits', 'delattr', 'dict',
+                   'dir', 'divmod', 'enumerate', 'eval', 'exec', 'execfile', 'exit', 'filter', 'float', 'format',
+                   'frozenset', 'getattr', 'globals', 'hasattr', 'hash', 'help', 'hex', 'id', 'input', 'int',
+                   'isinstance', 'issubclass', 'iter', 'len', 'license', 'list', 'locals', 'map', 'max', 'memoryview',
+                   'min', 'next', 'object', 'oct', 'open', 'ord', 'pow', 'print', 'property', 'quit', 'range', 'repr',
+                   'reversed', 'round', 'runfile', 'set', 'setattr', 'slice', 'sorted', 'staticmethod', 'str', 'sum',
+                   'super', 'tuple', 'type', 'vars', 'zip']
+
+# 35
+g_kwlist = ['False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue', 'def',
+            'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda',
+            'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield']
+
+
 def main():
-    """
-    主函数
-    """
-    print('\ \ /\ / / __|')
-    print(' \ V  V / (__')
-    print('  \_/\_/ \___|')
+    same_iterm = [x for x in g_kwlist if x in g_builtins_list]
+    if same_iterm:
+        print("same_iterm:", same_iterm)
+
     parser = argparse.ArgumentParser(description="this is wordCounter")
     parser.add_argument("-c", metavar="--char", dest="char_arg", help="return the number of characters")
     parser.add_argument("-w", metavar="--word", dest="word_arg", help="return the number of words")
@@ -111,7 +140,7 @@ def check_import_modules(file_name):
 
                 # skipped some line, eg: import_file_path(path, 1)
                 if line.startswith('import '):
-                    print("import line:", line)
+                    # print("import line:", line)
                     t_list = line.split()
                     line_num = len(t_list)
                     if line_num == 2:
@@ -138,7 +167,7 @@ def check_import_modules(file_name):
                 # skipped some line, eg from_name = "D{}".format(from_index)
                 # from 5 minutes to 1 minute, then restart Monit service with delaying 10 seconds.
                 if line.startswith('from ') and line.find('import') > 7:
-                    print("from line:", line)
+                    # print("from line:", line)
                     t_list = line.split()
                     line_num = len(t_list)
                     if line_num >= 4:
@@ -256,7 +285,7 @@ def RecurveDirMain(Path):
         # print("%s 文件信息：\n字符数目：%s\n单词数目：%s\n行数：%s\n" % (file, charsCount, wordsCount, linesCount))
 
         word_dir = check_import_modules(file)
-        print(word_dir)
+        # print(word_dir)
 
         t_dict_keys = word_dir.keys()
         # print(t_dict_keys)
