@@ -6,8 +6,8 @@ import os
 import glob
 import fnmatch
 import argparse
+from collections import Counter
 from functools import reduce
-
 
 # 156
 g_builtins_list = ['ArithmeticError', 'AssertionError', 'AttributeError', 'BaseException', 'BlockingIOError',
@@ -101,8 +101,38 @@ def WordCount(fileName):
         with open(fileName, "r", encoding='utf-8') as f:
             for line in f:
                 match = re.findall(r'[a-zA-Z-\']+', line)
+                print("match:", match)  # debug
                 wordsCount += len(match)
         return wordsCount
+    except IOError:
+        print("文件打开失败！请检查路径是否正确")
+
+
+def word_count(fileName):
+    """
+    统计单词数
+    :param:
+        fileName: 统计的文件
+    :return: 单词的数量
+    """
+    words_list = []
+    # print("fileName:", fileName)  # debug
+    try:
+        with open(fileName, "r", encoding='utf-8') as f:
+            for line in f:
+                # skipped blank line
+                if line == '\n':
+                    continue
+                # print("line:{}<len> {}".format(line, len(line)))  # debug
+                # skipped comment line
+                if line.startswith('#'):
+                    continue
+                # Naming rules
+                match = re.findall(r'[a-zA-Z_]+[\w]*', line)
+                if match:
+                    # print("match:", match)  # debug
+                    words_list.extend(match)
+        return words_list
     except IOError:
         print("文件打开失败！请检查路径是否正确")
 
@@ -261,6 +291,7 @@ def RecurveDirMain(Path):
     """
     cnt = 0
     path_dir_list = []
+    g_wd_list = []
     fileList = RecurveDir(Path)
     for file in fileList:
         # print(file)
@@ -283,6 +314,9 @@ def RecurveDirMain(Path):
         # linesCount = LineCount(file)
         # charsCount = CharCount(file)
         # print("%s 文件信息：\n字符数目：%s\n单词数目：%s\n行数：%s\n" % (file, charsCount, wordsCount, linesCount))
+        wd_list = word_count(file)
+        # print("wd_list:", wd_list)  # debug
+        g_wd_list.extend(wd_list)
 
         word_dir = check_import_modules(file)
         # print(word_dir)
@@ -312,8 +346,31 @@ def RecurveDirMain(Path):
     for i, val in enumerate(path_dir_list):
         update_frequency_dictionary(val, summary_dir)
 
-    print("Summary:")
+    print("Summary module:")
     print_frequency_dictionary(summary_dir)
+
+    # wd_dir = Counter(g_wd_list)
+    # print(wd_dir)
+    summary_wd_dir = {}
+    update_frequency_dictionary(g_wd_list, summary_wd_dir)
+    # print("Summary word:")
+    # print_frequency_dictionary(summary_wd_dir)
+
+    print("keyword:")
+    kw_dir = {}
+    for i, val in enumerate(g_kwlist):
+        tmp_val = summary_wd_dir.get(val)
+        if tmp_val:
+            kw_dir[val] = tmp_val
+    print(kw_dir)
+
+    print("builtins:")
+    builtins_dir = {}
+    for i, val in enumerate(g_builtins_list):
+        tmp_val = summary_wd_dir.get(val)
+        if tmp_val:
+            builtins_dir[val] = tmp_val
+    print(builtins_dir)
 
 
 def CCBCountMain(fileName):
